@@ -25,6 +25,12 @@ const placeholder = "__base__";
 
 // --- FUNCIONES AUXILIARES SIMPLIFICADAS ---
 // YA NO NECESITAMOS: BAREMOS_PENAS_EN_DIAS, convertirADias, clasificarPenaIndividual, determinarGravedadGeneral.
+function extraerNumeroArticulo(articuloStr) {
+    if (!articuloStr) return 0;
+    // Busca el primer número (puede incluir un punto para los apartados)
+    const match = articuloStr.match(/(\d+\.?\d*)/);
+    return match ? parseFloat(match[0]) : 0;
+}
 function formatearDuracion(d) { if (!d) return "N/A"; const p = []; if (d.años > 0) p.push(`${d.años} año${d.años !== 1 ? 's' : ''}`); if (d.meses > 0) p.push(`${d.meses} mes${d.meses !== 1 ? 'es' : ''}`); if (d.dias > 0) p.push(`${d.dias} día${d.dias !== 1 ? 's' : ''}`); return p.length > 0 ? p.join(' y ') : "N/A"; }
 function getIconForPena(t) { /* Tu función de iconos completa aquí */ return `<svg class="pena-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>`; }
 function formatearPenasDelito(d) { const op = d.opcionesDePena.map(o => o.map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>')).join('<div class="operador-o">O</div>'); const ob = d.penasObligatorias.map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>'); let r = ''; if (op) r += op; if (ob) { r += r ? `<div class="penas-obligatorias"><strong>Y (en todo caso)</strong>${ob}</div>` : ob; } return r || 'No especificado'; }
@@ -73,46 +79,58 @@ function buildSidebar() {
 
 function renderDelitos(delitosAMostrar) {
     contentContainer.innerHTML = "";
+
+    // Ordenamos la lista por artículo
+    delitosAMostrar.sort((a, b) => extraerNumeroArticulo(a.articulo) - extraerNumeroArticulo(b.articulo));
+    
     if (delitosAMostrar.length === 0) {
         contentContainer.innerHTML = `<p style="text-align:center; font-size: 1.2em; color: var(--color-muted-text);">No hay delitos que coincidan con los filtros seleccionados.</p>`;
         return;
     }
+
+    // Variables para llevar un registro del grupo actual
+    let currentTituloId = null;
+    let currentCapituloId = null;
+
     delitosAMostrar.forEach(d => {
+        const clasificacion = d.clasificacion;
+        
+        // --- LÓGICA PARA INSERTAR ENCABEZADOS DE CONTEXTO ---
+
+        // ¿Hemos cambiado de Título?
+        if (clasificacion.titulo !== currentTituloId) {
+            currentTituloId = clasificacion.titulo;
+            const nombreTitulo = DICCIONARIO_TITULOS[currentTituloId] || `Título ${currentTituloId}`;
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'context-header titulo-header';
+            headerDiv.innerHTML = `<h2>${nombreTitulo}</h2>`;
+            contentContainer.appendChild(headerDiv);
+            currentCapituloId = null; // Reseteamos el capítulo al cambiar de título
+        }
+
+        // ¿Hemos cambiado de Capítulo (y existe)?
+        if (clasificacion.capitulo && clasificacion.capitulo !== currentCapituloId) {
+            currentCapituloId = clasificacion.capitulo;
+            const nombreCapitulo = DICCIONARIO_CAPITULOS[currentCapituloId] || `Capítulo ${currentCapituloId}`;
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'context-header capitulo-header';
+            headerDiv.innerHTML = `<h3>${nombreCapitulo}</h3>`;
+            contentContainer.appendChild(headerDiv);
+        }
+        
+        // --- RENDERIZADO DE LA TARJETA DE DELITO (sin cambios) ---
         const gravedad = d.gravedad || "No clasificada";
         const gravedadClass = gravedad.toLowerCase().replace(" ", "-");
         const card = document.createElement("div");
         card.className = `delito-card ${gravedadClass}`;
-        const nombreTitulo = DICCIONARIO_TITULOS[d.clasificacion.titulo] || ``;
-        const nombreCapitulo = DICCIONARIO_CAPITULOS[d.clasificacion.capitulo] || ``;
-        const rutaClasificacion = [nombreTitulo, nombreCapitulo].filter(Boolean).join(' &gt; ');
+        
+        const rutaClasificacion = [
+            DICCIONARIO_TITULOS[clasificacion.titulo],
+            DICCIONARIO_CAPITULOS[clasificacion.capitulo],
+            DICCIONARIO_SECCIONES[clasificacion.seccion]
+        ].filter(Boolean).join(' &gt; ');
 
-        card.innerHTML = `
-          <div class="card-header">
-            <div class="info-principal">
-              <span class="articulo">${d.articulo}</span>
-              <h4>${d.nombre}</h4>
-            </div>
-            <div style="display: flex; align-items: center;">
-              <div class="gravedad-badge ${gravedadClass}">${gravedad}</div>
-              <svg class="expand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </div>
-          <div class="card-collapsible-content">
-            <div class="card-body">
-              <div class="descripcion">
-                <h5>Descripción de la conducta</h5>
-                ${marked.parse(d.descripcion)}
-              </div>
-              <div class="penas-aplicables">
-                <h5>Penas Aplicables</h5>
-                ${formatearPenasDelito(d)}
-              </div>
-            </div>
-            <div class="card-footer">
-              <div class="clasificacion-ruta"><strong>Clasificación:</strong> ${rutaClasificacion}</div>
-              <div class="info-denuncia"><strong>Persecución:</strong> ${d.requiereDenuncia ? 'Requiere denuncia' : 'De oficio'}</div>
-            </div>
-          </div>`;
+        card.innerHTML = `<div class="card-header"><div class="info-principal"><span class="articulo">${d.articulo}</span><h4>${d.nombre}</h4></div><div style="display: flex; align-items: center;"><div class="gravedad-badge ${gravedadClass}">${gravedad}</div><svg class="expand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg></div></div><div class="card-collapsible-content"><div class="card-body"><div class="descripcion"><h5>Descripción de la conducta</h5>${marked.parse(d.descripcion)}</div><div class="penas-aplicables"><h5>Penas Aplicables</h5>${formatearPenasDelito(d)}</div></div><div class="card-footer"><div class="clasificacion-ruta"><strong>Clasificación:</strong> ${rutaClasificacion}</div><div class="info-denuncia"><strong>Persecución:</strong> ${d.requiereDenuncia ? 'Requiere denuncia' : 'De oficio'}</div></div></div>`;
         contentContainer.appendChild(card);
     });
 }

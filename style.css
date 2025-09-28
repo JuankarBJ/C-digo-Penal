@@ -145,3 +145,24 @@ li.expanded > .nav-item > .nav-icon {
     transition: transform 0.2s ease-out;
     color: var(--color-muted-text);
 }
+/* --- AÑADE ESTOS ESTILOS AL FINAL DE TU CSS --- */
+
+.context-header {
+    margin-top: 8px;
+    margin-bottom: 2px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.context-header.titulo-header h2 {
+    font-size: 1.2em;
+    color: var(--color-accent-primary);
+    font-weight: 600;
+}
+
+.context-header.capitulo-header h3 {
+    font-size: 0.9em;
+    color: var(--color-muted-text);
+    font-weight: 500;
+    padding-left: 10px;
+}
