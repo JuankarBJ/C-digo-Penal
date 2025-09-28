@@ -1,3 +1,13 @@
+/* --- AÑADE ESTO AL PRINCIPIO DE TU ARCHIVO style.css --- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+
 :root {
     --color-dark-bg: #1f2a38; --color-card-bg: #2b3a4a; --color-light-text: #e8f0f7;
     --color-muted-text: #aebecd; --color-accent-primary: #7296b1; --color-block-bg: #202d3b;

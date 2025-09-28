@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generador de Delitos JSON</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+    <style>
+        :root {
+            --color-dark-bg: #1f2a38; --color-card-bg: #2b3a4a; --color-light-text: #e8f0f7;
+            --color-muted-text: #aebecd; --color-accent-primary: #7296b1; --color-block-bg: #202d3b;
+            --color-border: #40566b; --color-accent-green: #2a9d8f;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--color-dark-bg); color: var(--color-light-text); margin: 0; padding: 30px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 { text-align: center; color: var(--color-accent-primary); }
+        .form-section { background-color: var(--color-card-bg); padding: 25px; border-radius: 8px; margin-bottom: 20px; }
+        .form-section h2 { margin-top: 0; border-bottom: 2px solid var(--color-border); padding-bottom: 10px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        label { margin-bottom: 8px; font-weight: 600; color: var(--color-muted-text); }
+        input[type="text"], input[type="number"], select {
+            padding: 10px; border-radius: 5px; border: 1px solid var(--color-border);
+            background-color: var(--color-block-bg); color: var(--color-light-text); font-size: 1em;
+        }
+        button { padding: 10px 15px; border: none; border-radius: 5px; background-color: var(--color-accent-primary); color: #fff; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: #8aa7c2; }
+        button.delete-btn { background-color: #c0392b; padding: 5px 10px; }
+        button.delete-btn:hover { background-color: #e74c3c; }
+        .penas-container { display: flex; flex-direction: column; gap: 15px; }
+        .opcion-alternativa, .pena-obligatoria { border: 1px solid var(--color-border); padding: 15px; border-radius: 6px; }
+        .pena-row { background-color: var(--color-block-bg); padding: 15px; border-radius: 5px; margin-bottom: 10px; }
+        .pena-row-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: flex-end; }
+        .pena-row-grid.tipo-pena-wrapper { display:flex; justify-content:space-between; align-items:flex-end; grid-template-columns: unset; margin-bottom: 10px; }
+        .pena-row-grid label { font-size: 0.8em; margin-bottom: 4px; }
+        #json-output { white-space: pre-wrap; background-color: var(--color-block-bg); border: 1px solid var(--color-border); padding: 20px; border-radius: 8px; overflow-x: auto; font-family: monospace; }
+        .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .toastui-editor-defaultUI { border: 1px solid var(--color-border) !important; }
+        .toastui-editor-toolbar { background-color: var(--color-card-bg) !important; }
+        .toastui-editor-main .ProseMirror { background-color: #FFFFFF !important; color: #000000 !important; }
+        .toastui-editor-md-preview { background-color: var(--color-block-bg) !important; color: var(--color-light-text) !important; }
+        .toastui-editor-toolbar button, .toastui-editor-toolbar .tab-item { color: var(--color-light-text) !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generador de Delitos JSON</h1>
+        <div class="form-section"><h2>Información General</h2><div class="form-grid"><div class="form-group"><label for="articulo">Artículo</label><input type="text" id="articulo" placeholder="Ej. Art. 379.1"></div><div class="form-group"><label for="nombre">Nombre del Delito</label><input type="text" id="nombre" placeholder="Ej. Conducción con exceso de velocidad"></div><div class="form-group"><label for="gravedad">Gravedad</label><select id="gravedad"><option value="Leve">Leve</option><option value="Menos grave" selected>Menos grave</option><option value="Grave">Grave</option></select></div><div class="form-group"><label>¿Requiere Denuncia?</label><div><input type="radio" id="denuncia-si" name="denuncia" value="true"><label for="denuncia-si"> Sí</label><input type="radio" id="denuncia-no" name="denuncia" value="false" checked><label for="denuncia-no"> No (de oficio)</label></div></div></div></div>
+        <div class="form-section"><h2>Clasificación Jerárquica</h2><div class="form-grid"><div class="form-group"><label for="titulo">ID Título</label><input type="number" id="titulo" placeholder="Ej. 17"></div><div class="form-group"><label for="capitulo">ID Capítulo</label><input type="number" id="capitulo" placeholder="Ej. 1704"></div><div class="form-group"><label for="seccion">ID Sección (opcional)</label><input type="number" id="seccion"></div><div class="form-group"><label for="subseccion">ID Subsección (opcional)</label><input type="number" id="subseccion"></div></div></div>
+        <div class="form-section"><h2>Descripción de la Conducta</h2><div id="editor"></div></div>
+        <div class="form-section"><h2>Penas Alternativas ("O")</h2><div id="opciones-container" class="penas-container"></div><button id="add-opcion-btn">Añadir Opción Alternativa</button></div>
+        <div class="form-section"><h2>Penas Obligatorias ("Y en todo caso")</h2><div id="obligatorias-container" class="penas-container"></div><button id="add-obligatoria-btn">Añadir Pena Obligatoria</button></div>
+        <div style="text-align: center; margin: 30px 0;"><button id="generate-btn" style="padding: 15px 30px; font-size: 1.2em; background-color: var(--color-accent-green);">Generar JSON</button></div>
+        <div class="form-section" id="output-section" style="display:none;"><div class="output-header"><h2>Código JSON Generado</h2><button id="copy-btn">Copiar al Portapapeles</button></div><pre><code id="json-output"></code></pre></div>
+    </div>
+
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script>
+        const editor = new toastui.Editor({ el: document.querySelector('#editor'), height: '200px', initialEditType: 'wysiwyg', previewStyle: 'vertical', usageStatistics: false });
+        const opcionesContainer = document.getElementById('opciones-container');
+        const obligatoriasContainer = document.getElementById('obligatorias-container');
+        let opcionCounter = 0;
+
+        /**
+         * NUEVA FUNCIÓN CON TODOS LOS TIPOS DE PENA DEL PDF
+         */
+        function getPenaTipos() {
+            return `
+                <optgroup label="Penas Comunes">
+                    <option value="Prisión">Prisión</option>
+                    <option value="Multa">Multa</option>
+                    <option value="Trabajos en beneficio de la comunidad">Trabajos en beneficio de la comunidad</option>
+                    <option value="Localización permanente">Localización permanente</option>
+                </optgroup>
+                <optgroup label="Privaciones">
+                    <option value="Privación de la patria potestad">Privación de la patria potestad</option>
+                    <option value="Privación del derecho a conducir">Privación del derecho a conducir</option>
+                    <option value="Privación del derecho a tenencia y porte de armas">Privación de tenencia y porte de armas</option>
+                    <option value="Privación del derecho a residir en determinados lugares">Privación de residir en lugares</option>
+                </optgroup>
+                <optgroup label="Inhabilitaciones">
+                    <option value="Inhabilitación absoluta">Inhabilitación absoluta</option>
+                    <option value="Inhabilitaciones especiales">Inhabilitación especial</option>
+                    <option value="Suspensión de empleo o cargo público">Suspensión de empleo o cargo</option>
+                    <option value="Inhabilitación especial para tenencia de animales">Inhabilitación para tenencia de animales</option>
+                </optgroup>
+                <optgroup label="Prohibiciones">
+                    <option value="Prohibición de comunicarse con la víctima">Prohibición de comunicarse</option>
+                    <option value="Prohibición de aproximarse a la víctima">Prohibición de aproximarse</option>
+                </optgroup>
+                <optgroup label="Otras">
+                    <option value="Prisión permanente revisable">Prisión permanente revisable</option>
+                    <option value="Multa proporcional">Multa proporcional</option>
+                </optgroup>
+            `;
+        }
+
+        function createPenaRowHTML() {
+            return `<div class="pena-row-grid tipo-pena-wrapper"><div class="form-group" style="flex-grow: 1;"><label>Tipo de Pena</label><select class="pena-tipo">${getPenaTipos()}</select></div><button class="delete-btn" onclick="this.closest('.pena-row').remove()">X</button></div><div class="pena-row-grid"><div class="form-group"><label>Min Años</label><input type="number" class="pena-min-anos" placeholder="0" min="0"></div><div class="form-group"><label>Min Meses</label><input type="number" class="pena-min-meses" placeholder="0" min="0"></div><div class="form-group"><label>Min Días</label><input type="number" class="pena-min-dias" placeholder="0" min="0"></div></div><div class="pena-row-grid"><div class="form-group"><label>Max Años</label><input type="number" class="pena-max-anos" placeholder="0" min="0"></div><div class="form-group"><label>Max Meses</label><input type="number" class="pena-max-meses" placeholder="0" min="0"></div><div class="form-group"><label>Max Días</label><input type="number" class="pena-max-dias" placeholder="0" min="0"></div></div>`;
+        }
+        
+        document.getElementById('add-opcion-btn').addEventListener('click', () => { opcionCounter++; const div = document.createElement('div'); div.className = 'opcion-alternativa'; div.innerHTML = `<h4>Opción ${opcionCounter}</h4><div class="penas-en-opcion"><div class="pena-row">${createPenaRowHTML()}</div></div><button class="add-pena-a-opcion-btn" style="margin-top: 10px;">Añadir Pena (Y)</button>`; opcionesContainer.appendChild(div); });
+        document.getElementById('add-obligatoria-btn').addEventListener('click', () => { const div = document.createElement('div'); div.className = 'pena-obligatoria'; div.innerHTML = `<div class="pena-row">${createPenaRowHTML()}</div>`; obligatoriasContainer.appendChild(div); });
+        opcionesContainer.addEventListener('click', e => { if (e.target.classList.contains('add-pena-a-opcion-btn')) { const container = e.target.previousElementSibling; const div = document.createElement('div'); div.className = 'pena-row'; div.innerHTML = createPenaRowHTML(); container.appendChild(div); } });
+        
+        document.getElementById('generate-btn').addEventListener('click', () => {
+            const delito = { articulo: document.getElementById('articulo').value || "", nombre: document.getElementById('nombre').value || "", gravedad: document.getElementById('gravedad').value || "Menos grave", descripcion: editor.getMarkdown() || "", requiereDenuncia: document.querySelector('input[name="denuncia"]:checked').value === 'true', clasificacion: { titulo: parseInt(document.getElementById('titulo').value) || null, capitulo: parseInt(document.getElementById('capitulo').value) || null, seccion: parseInt(document.getElementById('seccion').value) || null, subseccion: parseInt(document.getElementById('subseccion').value) || null, }, opcionesDePena: [], penasObligatorias: [] };
+            document.querySelectorAll('.opcion-alternativa').forEach(opcionEl => { const opcionPenas = []; opcionEl.querySelectorAll('.pena-row').forEach(row => { opcionPenas.push(readPenaFromRow(row)); }); if (opcionPenas.length > 0) { delito.opcionesDePena.push(opcionPenas); } });
+            document.querySelectorAll('#obligatorias-container .pena-row').forEach(row => { delito.penasObligatorias.push(readPenaFromRow(row)); });
+            
+            // --- CAMBIO A JSON COMPACTO ---
+            // Se elimina el segundo y tercer argumento para que no haya saltos de línea.
+            const jsonString = JSON.stringify(delito); 
+            
+            document.getElementById('json-output').textContent = `,\n${jsonString}`;
+            document.getElementById('output-section').style.display = 'block';
+        });
+
+        function readPenaFromRow(rowEl) { return { tipo: rowEl.querySelector('.pena-tipo').value, durMin: { años: parseInt(rowEl.querySelector('.pena-min-anos').value) || 0, meses: parseInt(rowEl.querySelector('.pena-min-meses').value) || 0, dias: parseInt(rowEl.querySelector('.pena-min-dias').value) || 0 }, durMax: { años: parseInt(rowEl.querySelector('.pena-max-anos').value) || 0, meses: parseInt(rowEl.querySelector('.pena-max-meses').value) || 0, dias: parseInt(rowEl.querySelector('.pena-max-dias').value) || 0 } }; }
+        document.getElementById('copy-btn').addEventListener('click', () => { const text = document.getElementById('json-output').textContent; navigator.clipboard.writeText(text).then(() => { alert('¡Copiado!'); }, () => { alert('Error al copiar.'); }); });
+        document.addEventListener('input', e => { if (e.target.type === 'number' && e.target.value < 0) { e.target.value = 0; } });
+    </script>
+</body>
+</html>

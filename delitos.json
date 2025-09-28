@@ -4,7 +4,8 @@
     "nombre": "Conducción con exceso de velocidad",
     "descripcion": "Conducir un vehículo a motor o ciclomotor a velocidad superior en 60 km/h en vía urbana o en 80 km/h en vía interurbana a la permitida reglamentariamente.",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -23,9 +24,10 @@
   {
     "articulo": "Art. 379.2",
     "nombre": "Conducción bajo la influencia de alcohol o drogas",
-    "descripcion": "Conducir un vehículo a motor o ciclomotor bajo la influencia de drogas tóxicas, estupefacientes, sustancias psicotrópicas o de bebidas alcohólicas (tasa de alcohol en aire > 0,60 mg/l o en sangre > 1,2 g/l).",
+    "descripcion": "Conducir un vehículo a motor o ciclomotor bajo la influencia de drogas tóxicas, estupefacientes, sustancias psicotrópicas o de bebidas alcohólicas. Y en todo caso cuando se condujere con una tasa de alcohol en aire > 0,60 mg/l o en sangre > 1,2 g/l.",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -43,9 +45,10 @@
   {
     "articulo": "Art. 380",
     "nombre": "Conducción temeraria",
-    "descripcion": "Conducir un vehículo a motor o ciclomotor con temeridad manifiesta y poniendo en concreto peligro la vida o la integridad de las personas.",
+    "descripcion": "Conducir un vehículo a motor o ciclomotor con temeridad manifiesta y poniendo en concreto peligro la vida o la integridad de las personas. -> A los efectos del presente precepto se reputará manifiestamente temeraria la conducción en la que concurrieren las circunstancias previstas en el apartado primero y en el inciso segundo del apartado segundo del artículo anterior",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -62,7 +65,8 @@
     "nombre": "Conducción temeraria con manifiesto desprecio por la vida",
     "descripcion": "Realizar la conducta de conducción temeraria del artículo anterior con manifiesto desprecio por la vida de los demás.",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -80,7 +84,8 @@
     "nombre": "Conducción temeraria con manifiesto desprecio (sin peligro concreto)",
     "descripcion": "Realizar la conducta del apartado anterior (con manifiesto desprecio por la vida) pero sin haber puesto en concreto peligro la vida o la integridad de las personas.",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -89,16 +94,17 @@
     "opcionesDePena": [],
     "penasObligatorias": [
         { "tipo": "Prisión", "durMin": { "años": 1, "meses": 0, "dias": 0 }, "durMax": { "años": 2, "meses": 0, "dias": 0 } },
-        { "tipo": "Multa", "durMin": { "años": 0, "meses": 3, "dias": 0 }, "durMax": { "años": 0, "meses": 12, "dias": 0 } },
+        { "tipo": "Multa", "durMin": { "años": 0, "meses": 6, "dias": 0 }, "durMax": { "años": 0, "meses": 12, "dias": 0 } },
         { "tipo": "Privación del derecho a conducir", "durMin": { "años": 6, "meses": 0, "dias": 0 }, "durMax": { "años": 10, "meses": 0, "dias": 0 } }
     ]
   },
   {
     "articulo": "Art. 382 bis.2",
     "nombre": "Abandono del lugar del accidente (origen imprudente)",
-    "descripcion": "Abandonar voluntariamente el lugar de los hechos tras causar un accidente con fallecidos o lesionados graves, teniendo el accidente origen en una acción imprudente del conductor.",
+    "descripcion": "El conductor de un vehículo a motor o de un ciclomotor que, fuera de los casos contemplados en el artículo 195, voluntariamente y sin que concurra riesgo propio o de terceros, abandone el lugar de los hechos tras causar un accidente en el que fallecieren una o varias personas o en el que se les causare alguna de las lesiones a que se refieren los artículos 147.1, 149 y 150, teniendo el accidente origen en una acción imprudente del conductor.",
     "requiereDenuncia": true,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -113,9 +119,10 @@
   {
     "articulo": "Art. 382 bis.3",
     "nombre": "Abandono del lugar del accidente (origen fortuito)",
-    "descripcion": "Abandonar voluntariamente el lugar de los hechos tras causar un accidente con fallecidos o lesionados graves, teniendo el accidente un origen fortuito.",
+    "descripcion": "El conductor de un vehículo a motor o de un ciclomotor que, fuera de los casos contemplados en el artículo 195, voluntariamente y sin que concurra riesgo propio o de terceros, abandone el lugar de los hechos tras causar un accidente en el que fallecieren una o varias personas o en el que se les causare alguna de las lesiones a que se refieren los artículos 147.1, 149 y 150, teniendo el accidente un origen fortuito.",
     "requiereDenuncia": true,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -130,9 +137,10 @@
   {
     "articulo": "Art. 383",
     "nombre": "Negativa a someterse a pruebas de alcoholemia/drogas",
-    "descripcion": "Negarse a someterse a las pruebas de alcoholemia o drogas tras ser requerido por un agente de la autoridad.",
+    "descripcion": "El conductor que, requerido por un agente de la autoridad, se negare a someterse a las pruebas legalmente establecidas para la comprobación de las tasas de alcoholemia y la presencia de las **drogas tóxicas, estupefacientes y sustancias psicotrópicas** a que se refieren los artículos anteriores.",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -149,7 +157,8 @@
     "nombre": "Conducción sin permiso o licencia",
     "descripcion": "Conducir un vehículo tras la pérdida de vigencia del permiso por pérdida total de puntos, por privación cautelar o definitiva por decisión judicial, o sin haberlo obtenido nunca.",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -165,9 +174,10 @@
   {
     "articulo": "Art. 385",
     "nombre": "Creación de grave riesgo para la circulación",
-    "descripcion": "Originar un grave riesgo para la circulación colocando obstáculos, derramando sustancias, alterando señales o no restableciendo la seguridad de la vía cuando es obligatorio.",
+    "descripcion": "El que originare un **grave riesgo para la circulación** de alguna de las siguientes formas: \n\n 1.ª Colocando en la vía obstáculos imprevisibles, derramando sustancias deslizantes o inflamables o mutando, sustrayendo o anulando la señalización o por cualquier otro medio. \n\n 2.ª No restableciendo la seguridad de la vía, cuando haya obligación de hacerlo. ",
     "requiereDenuncia": false,
-    "clasificacion": {
+    "gravedad": "Menos grave",
+"clasificacion": {
       "titulo": 17,
       "capitulo": 1704,
       "seccion": "",
@@ -187,7 +197,8 @@
     "nombre": "Acoso (Stalking)",
     "descripcion": "Conducta reiterada por la que se menoscaba gravemente la libertad y el sentimiento de seguridad de la víctima.",
     "requiereDenuncia": true,
-    "clasificacion": { "titulo": 6, "capitulo": 603, "seccion": null, "subseccion": null },
+    "gravedad": "Menos grave",
+"clasificacion": { "titulo": 6, "capitulo": 603, "seccion": null, "subseccion": null },
     "opcionesDePena": [
       [{ "tipo": "Prisión", "durMin": { "años": 0, "meses": 3, "dias": 0 }, "durMax": { "años": 2, "meses": 0, "dias": 0 } }],
       [{ "tipo": "Multa", "durMin": { "años": 0, "meses": 6, "dias": 0 }, "durMax": { "años": 0, "meses": 24, "dias": 0 } }]
@@ -199,10 +210,41 @@
     "nombre": "Robo con fuerza en las cosas",
     "descripcion": "Son reos del delito de robo con fuerza en las cosas los que ejecuten el hecho cuando concurra alguna de las circunstancias siguientes: Escalamiento, Rompimiento, Fractura, etc.",
     "requiereDenuncia": false,
-    "clasificacion": { "titulo": 13, "capitulo": 1302, "seccion": 130201, "subseccion": null },
+    "gravedad": "Menos grave",
+"clasificacion": { "titulo": 13, "capitulo": 1302, "seccion": 130201, "subseccion": null },
     "opcionesDePena": [
       [{ "tipo": "Prisión", "durMin": { "años": 1, "meses": 0, "dias": 0 }, "durMax": { "años": 3, "meses": 0, "dias": 0 } }]
     ],
     "penasObligatorias": []
-  }
+  },
+{
+  "articulo": "Art. 234.1",
+  "nombre": "Hurto",
+  "gravedad": "Menos grave",
+  "descripcion": "El que, con ánimo de lucro, **tomare las cosas muebles ajenas sin la voluntad de su dueño**, si la cuantía de lo sustraído excediese de 400 euros.",
+  "requiereDenuncia": false,
+  "clasificacion": {
+    "titulo": 13,
+    "capitulo": 1301,
+    "seccion": null,
+    "subseccion": null
+  },
+  "opcionesDePena": [],
+  "penasObligatorias": [
+    {
+      "tipo": "Prisión",
+      "durMin": {
+        "años": 0,
+        "meses": 6,
+        "dias": 0
+      },
+      "durMax": {
+        "años": 0,
+        "meses": 18,
+        "dias": 0
+      }
+    }
+  ]
+},
+{"articulo":"Art. 234.2","nombre":"Hurto leve","gravedad":"Leve","descripcion":"El que, con ánimo de lucro, tomare las cosas muebles ajenas sin la voluntad de su dueño si el valor de lo sustraído no excediese de los 400€.","requiereDenuncia":true,"clasificacion":{"titulo":13,"capitulo":1301,"seccion":null,"subseccion":null},"opcionesDePena":[[{"tipo":"Multa","durMin":{"años":0,"meses":1,"dias":0},"durMax":{"años":0,"meses":3,"dias":0}}]],"penasObligatorias":[]}
 ]
