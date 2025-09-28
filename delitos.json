@@ -1,31 +1,207 @@
 [
     
 {
-  "articulo": "Art. 138",
-  "nombre": "Homicidio básico",
-  "descripcion": "1. **El que matare a otro** será castigado, como reo de homicidio, con la pena de prisión de diez a quince años.\n2. Los hechos serán castigados con la **pena superior en grado** en los siguientes casos:\n a) cuando concurra en su comisión alguna de las circunstancias del apartado 1 del artículo 140, o\n b) cuando los hechos sean además constitutivos de un delito de atentado del artículo 550.",
-  "requiereDenuncia": false,
-  "gravedad": "Grave",
-  "clasificacion": {
-    "titulo": 1,
-    "capitulo": "",
-    "seccion": "",
-    "subseccion": ""
-  },
-  "opcionesDePena": [
-    [
+    "articulo": "Art. 138",
+    "nombre": "Homicidio básico",
+    "descripcion": "1. El que matare a otro será castigado, como reo de homicidio, con la pena de prisión de diez a quince años.\n2. Los hechos serán castigados con la pena superior en grado en los siguientes casos:\n a) cuando concurra en su comisión alguna de las circunstancias del apartado 1 del artículo 140, o\n b) cuando los hechos sean además constitutivos de un delito de atentado del artículo 550.",
+    "requiereDenuncia": false,
+    "gravedad": "Grave",
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
       {
         "tipo": "Prisión",
         "durMin": { "años": 10, "meses": 0, "dias": 0 },
         "durMax": { "años": 15, "meses": 0, "dias": 0 }
       }
     ]
-  ],
-  "penasObligatorias": []
-},
-{"articulo":"Art. 139","nombre":"Asesinato","gravedad":"Grave","descripcion":"1. Será castigado con la pena de prisión de quince a veinticinco años, como **reo de asesinato**, el que matare a otro concurriendo alguna de las circunstancias siguientes:\n    1.ª Con alevosía.\n    2.ª Por precio, recompensa o promesa.\n    3.ª Con ensañamiento, aumentando deliberada e inhumanamente el dolor del ofendido.\n    4.ª Para facilitar la comisión de otro delito o para evitar que se descubra.\n2.  Cuando en un asesinato concurran más de una de las circunstancias previstas en el apartado anterior, se impondrá la *pena en su mitad superior*.\n\n\n","requiereDenuncia":false,"clasificacion":{"titulo":1,"capitulo":null,"seccion":null,"subseccion":null},"opcionesDePena":[[{"tipo":"Prisión","durMin":{"años":15,"meses":0,"dias":0},"durMax":{"años":25,"meses":0,"dias":0}}]],"penasObligatorias":[]},
-
-
+  },
+  {
+    "articulo": "Art. 139",
+    "nombre": "Asesinato",
+    "gravedad": "Grave",
+    "descripcion": "1. Será castigado con la pena de prisión de quince a veinticinco años, como reo de asesinato, el que matare a otro concurriendo alguna de las circunstancias siguientes:\n 1.ª Con alevosía.\n 2.ª Por precio, recompensa o promesa.\n 3.ª Con ensañamiento, aumentando deliberada e inhumanamente el dolor del ofendido.\n 4.ª Para facilitar la comisión de otro delito o para evitar que se descubra.\n2. Cuando en un asesinato concurran más de una de las circunstancias previstas en el apartado anterior, se impondrá la pena en su mitad superior.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Prisión",
+        "durMin": { "años": 15, "meses": 0, "dias": 0 },
+        "durMax": { "años": 25, "meses": 0, "dias": 0 }
+      }
+    ]
+  },
+  {
+    "articulo": "Art. 140",
+    "nombre": "Asesinato agravado",
+    "gravedad": "Grave",
+    "descripcion": "1. El asesinato será castigado con pena de prisión permanente revisable cuando concurra alguna de las siguientes circunstancias:\n 1.ª Que la víctima sea menor de dieciséis años de edad, o se trate de una persona especialmente vulnerable por razón de su edad, enfermedad o discapacidad.\n 2.ª Que el hecho fuera subsiguiente a un delito contra la libertad sexual que el autor hubiera cometido sobre la víctima.\n 3.ª Que el delito se hubiera cometido por quien perteneciere a un grupo u organización criminal.\n2. Al reo de asesinato que hubiera sido condenado por la muerte de más de dos personas se le impondrá una pena de prisión permanente revisable.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Prisión permanente revisable"
+      }
+    ]
+  },
+  {
+    "articulo": "Art. 141",
+    "nombre": "Provocación, conspiración y proposición para el homicidio y asesinato",
+    "gravedad": "Grave",
+    "descripcion": "La provocación, la conspiración y la proposición para cometer los delitos previstos en los tres artículos precedentes, será castigada con la pena inferior en uno o dos grados a la señalada en su caso en los artículos anteriores.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": []
+  },
+  {
+    "articulo": "Art. 142.1",
+    "nombre": "Homicidio por imprudencia grave",
+    "gravedad": "Menos grave",
+    "descripcion": "El que por imprudencia grave causare la muerte de otro, será castigado, como reo de homicidio imprudente. Se reputará en todo caso como imprudencia grave la conducción en la que la concurrencia de alguna de las circunstancias previstas en el artículo 379 determinara la producción del hecho.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Prisión",
+        "durMin": { "años": 1, "meses": 0, "dias": 0 },
+        "durMax": { "años": 4, "meses": 0, "dias": 0 }
+      }
+    ]
+  },
+  {
+    "articulo": "Art. 142.2",
+    "nombre": "Homicidio por imprudencia menos grave",
+    "gravedad": "Leve",
+    "descripcion": "El que por imprudencia menos grave causare la muerte de otro. Se reputará en todo caso como imprudencia menos grave aquella no calificada como grave en la que para la producción del hecho haya sido determinante la comisión de alguna de las infracciones graves de las normas de tráfico, circulación de vehículos a motor y seguridad vial.",
+    "requiereDenuncia": true,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Multa",
+        "durMin": { "años": 0, "meses": 3, "dias": 0 },
+        "durMax": { "años": 0, "meses": 18, "dias": 0 }
+      }
+    ]
+  },
+  {
+    "articulo": "Art. 143.1",
+    "nombre": "Inducción al suicidio",
+    "gravedad": "Grave",
+    "descripcion": "El que induzca al suicidio de otro será castigado con la pena de prisión de cuatro a ocho años.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Prisión",
+        "durMin": { "años": 4, "meses": 0, "dias": 0 },
+        "durMax": { "años": 8, "meses": 0, "dias": 0 }
+      }
+    ]
+  },
+  {
+    "articulo": "Art. 143.2",
+    "nombre": "Cooperación al suicidio",
+    "gravedad": "Grave",
+    "descripcion": "Se impondrá la pena de prisión de dos a cinco años al que coopere con actos necesarios al suicidio de una persona.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Prisión",
+        "durMin": { "años": 2, "meses": 0, "dias": 0 },
+        "durMax": { "años": 5, "meses": 0, "dias": 0 }
+      }
+    ]
+  },
+  {
+    "articulo": "Art. 143.3",
+    "nombre": "Cooperación ejecutiva al suicidio",
+    "gravedad": "Grave",
+    "descripcion": "Será castigado con la pena de prisión de seis a diez años si la cooperación llegara hasta el punto de ejecutar la muerte.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Prisión",
+        "durMin": { "años": 6, "meses": 0, "dias": 0 },
+        "durMax": { "años": 10, "meses": 0, "dias": 0 }
+      }
+    ]
+  },
+  {
+    "articulo": "Art. 143 bis",
+    "nombre": "Incitación al suicidio de menores o personas con discapacidad por medios telemáticos",
+    "gravedad": "Grave",
+    "descripcion": "La distribución o difusión pública a través de Internet, del teléfono o de cualquier otra tecnología de la información o de la comunicación de contenidos específicamente destinados a promover, fomentar o incitar al suicidio de personas menores de edad o personas con discapacidad necesitadas de especial protección será castigada con la pena de prisión de uno a cuatro años.",
+    "requiereDenuncia": false,
+    "clasificacion": {
+      "titulo": 1,
+      "capitulo": "",
+      "seccion": "",
+      "subseccion": ""
+    },
+    "opcionesDePena": [],
+    "penasObligatorias": [
+      {
+        "tipo": "Prisión",
+        "durMin": { "años": 1, "meses": 0, "dias": 0 },
+        "durMax": { "años": 4, "meses": 0, "dias": 0 }
+      }
+    ]
+  },
 
   {
     "articulo": "Art. 379.1",
