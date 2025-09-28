@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Base de Datos del Código Penal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <aside id="sidebar">
+    </aside>
+
+  <main id="content-area">
+    <h1>Base de Datos del Código Penal</h1>
+    <div class="filtros">
+      <label for="filtroGravedad">Filtrar por gravedad:</label>
+      <select id="filtroGravedad">
+        <option value="">(Todas)</option>
+        <option value="Leve">Leve</option>
+        <option value="Menos grave">Menos grave</option>
+        <option value="Grave">Grave</option>
+      </select>
+    </div>
+    
+    <div id="delitos-container"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
