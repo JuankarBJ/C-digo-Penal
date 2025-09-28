@@ -109,3 +109,29 @@ h1 { text-align: center; margin-bottom: 40px; font-size: 1.8em; }
 .nav-item.active-nav, .nav-item.active-nav span {
     color: #fff !important; /* Asegura que el texto activo siempre sea blanco */
 }
+/* REEMPLAZA ESTAS REGLAS EN TU STYLE.CSS */
+
+/* Contenido desplegable del menú */
+.nav-submenu {
+    max-height: 0;
+    overflow: hidden;
+    /* Usamos una animación más rápida y fluida */
+    transition: max-height 0.25s ease-out;
+}
+
+/* ESTA ES LA REGLA CLAVE CORREGIDA */
+/* Ahora, la animación se aplica al <ul> cuando su <li> padre tiene la clase .expanded */
+li.expanded > .nav-submenu {
+    max-height: 2000px; /* Un valor grande para permitir que el contenido quepa */
+}
+
+/* Corregimos el selector del icono para que apunte al <li> padre */
+li.expanded > .nav-item > .nav-icon {
+    transform: rotate(90deg);
+}
+
+/* Mantenemos el icono de los títulos siempre visible y sin rotación si no tienen hijos */
+.nav-item.nav-titulo > .nav-icon {
+    transition: transform 0.2s ease-out;
+    color: var(--color-muted-text);
+}
