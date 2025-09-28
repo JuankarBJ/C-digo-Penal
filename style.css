@@ -166,3 +166,66 @@ li.expanded > .nav-item > .nav-icon {
     font-weight: 500;
     padding-left: 10px;
 }
+
+/* --- AÑADE ESTA NUEVA SECCIÓN AL FINAL DE TU style.css --- */
+
+/* ------------------------------------ */
+/* 7. ESTILOS PARA MÓVILES (Adaptable)  */
+/* ------------------------------------ */
+
+#menu-toggle-btn {
+    display: none; /* Oculto en escritorio */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--color-accent-primary);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 1001;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#menu-toggle-btn svg {
+    width: 32px;
+    height: 32px;
+    color: #fff;
+}
+
+#backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+@media (max-width: 900px) {
+    #sidebar {
+        position: fixed; /* La sidebar se superpone en móvil */
+        transform: translateX(-100%); /* Oculta a la izquierda por defecto */
+    }
+
+    #content-area {
+        width: 100%;
+        padding: 20px;
+    }
+
+    body.sidebar-visible #sidebar {
+        transform: translateX(0); /* Muestra la sidebar */
+    }
+
+    body.sidebar-visible #backdrop {
+        display: block;
+        opacity: 1;
+    }
+}

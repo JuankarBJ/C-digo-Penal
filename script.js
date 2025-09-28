@@ -159,6 +159,7 @@ function aplicarFiltrosYRenderizar() {
 // --- MANEJO DE EVENTOS ---
 sidebarContainer.addEventListener('click', function(event) {
     const itemClicked = event.target.closest('.nav-item');
+    
     if (!itemClicked) return; // Si el clic no fue en un item, no hacemos nada
 
     // Verificamos si el clic fue específicamente en el icono de la flecha
@@ -185,6 +186,12 @@ sidebarContainer.addEventListener('click', function(event) {
         
         // Llamamos a la función para que filtre y renderice el contenido
         aplicarFiltrosYRenderizar();
+
+        // --- MEJORA AÑADIDA PARA MÓVILES ---
+        // Si estamos en una pantalla pequeña, cerramos la barra lateral después de hacer clic en un filtro.
+        if (window.innerWidth <= 900) {
+            document.body.classList.remove('sidebar-visible');
+        }
     }
 });
 
@@ -194,6 +201,20 @@ contentContainer.addEventListener('click', function(event) {
 });
 
 filtroGravedadSelect.addEventListener('change', aplicarFiltrosYRenderizar);
+// --- AÑADE ESTO ANTES DE LA INICIALIZACIÓN EN SCRIPT.JS ---
+
+// --- MANEJO DE LA INTERFAZ MÓVIL ---
+const menuToggleBtn = document.getElementById('menu-toggle-btn');
+const backdrop = document.getElementById('backdrop');
+const body = document.body;
+
+menuToggleBtn.addEventListener('click', () => {
+    body.classList.toggle('sidebar-visible');
+});
+
+backdrop.addEventListener('click', () => {
+    body.classList.remove('sidebar-visible');
+});
 
 // --- INICIALIZACIÓN ---
 document.addEventListener("DOMContentLoaded", () => {
