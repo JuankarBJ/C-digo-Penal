@@ -1,6 +1,7 @@
 // --- DICCIONARIOS ---
 const DICCIONARIO_TITULOS = {
-    6: "Título VI: Delitos contra la libertad",
+    1: "Título I: Del homicidio y sus formas",
+	6: "Título VI: Delitos contra la libertad",
     13: "Título XIII: Delitos contra el patrimonio",
     17: "Título XVII: Delitos contra la seguridad colectiva"
 };

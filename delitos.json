@@ -1,4 +1,32 @@
 [
+    
+{
+  "articulo": "Art. 138",
+  "nombre": "Homicidio básico",
+  "descripcion": "1. **El que matare a otro** será castigado, como reo de homicidio, con la pena de prisión de diez a quince años.\n2. Los hechos serán castigados con la **pena superior en grado** en los siguientes casos:\n a) cuando concurra en su comisión alguna de las circunstancias del apartado 1 del artículo 140, o\n b) cuando los hechos sean además constitutivos de un delito de atentado del artículo 550.",
+  "requiereDenuncia": false,
+  "gravedad": "Grave",
+  "clasificacion": {
+    "titulo": 1,
+    "capitulo": "",
+    "seccion": "",
+    "subseccion": ""
+  },
+  "opcionesDePena": [
+    [
+      {
+        "tipo": "Prisión",
+        "durMin": { "años": 10, "meses": 0, "dias": 0 },
+        "durMax": { "años": 15, "meses": 0, "dias": 0 }
+      }
+    ]
+  ],
+  "penasObligatorias": []
+},
+{"articulo":"Art. 139","nombre":"Asesinato","gravedad":"Grave","descripcion":"1. Será castigado con la pena de prisión de quince a veinticinco años, como **reo de asesinato**, el que matare a otro concurriendo alguna de las circunstancias siguientes:\n    1.ª Con alevosía.\n    2.ª Por precio, recompensa o promesa.\n    3.ª Con ensañamiento, aumentando deliberada e inhumanamente el dolor del ofendido.\n    4.ª Para facilitar la comisión de otro delito o para evitar que se descubra.\n2.  Cuando en un asesinato concurran más de una de las circunstancias previstas en el apartado anterior, se impondrá la *pena en su mitad superior*.\n\n\n","requiereDenuncia":false,"clasificacion":{"titulo":1,"capitulo":null,"seccion":null,"subseccion":null},"opcionesDePena":[[{"tipo":"Prisión","durMin":{"años":15,"meses":0,"dias":0},"durMax":{"años":25,"meses":0,"dias":0}}]],"penasObligatorias":[]},
+
+
+
   {
     "articulo": "Art. 379.1",
     "nombre": "Conducción con exceso de velocidad",
