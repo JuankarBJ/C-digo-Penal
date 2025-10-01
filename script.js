@@ -1,3 +1,22 @@
+// --- INICIALIZACIÓN DE FIREBASE ---
+
+// 1. Pega aquí el objeto de configuración que copiaste de Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyAJwPnmjM1RCn5tr60tq_vwLUoRqsmwHzU",
+    authDomain: "codigopenal-app.firebaseapp.com",
+    projectId: "codigopenal-app",
+    storageBucket: "codigopenal-app.firebasestorage.app",
+    messagingSenderId: "293989113735",
+    appId: "1:293989113735:web:a9515149fc06e7471efd22"
+  };
+
+// 2. Inicializa Firebase y obtén referencias a los servicios
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore(); // Referencia a la base de datos Firestore
+const auth = firebase.auth();   // Referencia a la autenticación
+
+
+
 // --- DICCIONARIOS ---
 const DICCIONARIO_TITULOS = {
     1: "Título I: Del homicidio y sus formas",
@@ -156,6 +175,32 @@ function aplicarFiltrosYRenderizar() {
     }
     renderDelitos(delitosResultantes);
 }
+function subirDatosIniciales() {
+    console.log("Iniciando subida de datos...");
+    fetch('delitos.json')
+        .then(res => res.json())
+        .then(data => {
+            const coleccionDelitos = db.collection("delitos");
+            const promesas = [];
+
+            data.forEach(delito => {
+                // Añadimos cada delito a la colección.
+                // 'add' crea un documento con un ID automático.
+                promesas.push(coleccionDelitos.add(delito));
+            });
+
+            // Esperamos a que todas las subidas terminen
+            return Promise.all(promesas);
+        })
+        .then(() => {
+            console.log("¡Éxito! Todos los delitos se han subido a Firestore.");
+            alert("¡Datos subidos a Firestore con éxito!");
+        })
+        .catch(error => {
+            console.error("Error durante la subida inicial:", error);
+            alert("Error al subir los datos.");
+        });
+}
 
 // --- MANEJO DE EVENTOS ---
 sidebarContainer.addEventListener('click', function(event) {
@@ -217,17 +262,24 @@ backdrop.addEventListener('click', () => {
     body.classList.remove('sidebar-visible');
 });
 
-// --- INICIALIZACIÓN ---
+// --- INICIALIZACIÓN DE LA APLICACIÓN ---
 document.addEventListener("DOMContentLoaded", () => {
-    fetch('delitos.json')
-        .then(response => response.ok ? response.json() : Promise.reject(response.statusText))
-        .then(data => {
-            delitos = data;
+    // Ya no usamos fetch('delitos.json')
+    // Ahora leemos desde la colección "delitos" de Firestore
+    db.collection("delitos").get()
+        .then((querySnapshot) => {
+            delitos = []; // Vaciamos el array por si acaso
+            querySnapshot.forEach((doc) => {
+                // 'doc.data()' es el objeto de delito que guardamos
+                delitos.push(doc.data());
+            });
+            
+            // Una vez cargados los datos, iniciamos la aplicación como antes
             buildSidebar();
             aplicarFiltrosYRenderizar();
         })
         .catch(error => {
-            console.error('Error al cargar o procesar el archivo de delitos:', error);
-            contentContainer.innerHTML = `<p style="text-align:center; color: var(--color-accent-red);">Error: No se pudo cargar la base de datos.</p>`;
+            console.error('Error al cargar los delitos desde Firestore:', error);
+            contentContainer.innerHTML = `<p style="text-align:center; color: var(--color-accent-red);">Error: No se pudo conectar a la base de datos.</p>`;
         });
 });
