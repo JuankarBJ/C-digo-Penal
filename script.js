@@ -56,7 +56,7 @@ function getIconForPena(t) { /* Tu función de iconos completa aquí */ return `
 // REEMPLAZA ESTA FUNCIÓN EN TU SCRIPT.JS
 
 function formatearPenasDelito(delito) {
-    const opcionesStr = delito.opcionesDePena.map(opcionObj => {
+    const opcionesStr = delito.penasAlternativas.map(opcionObj => {
         // Ahora 'opcionObj' es { penas: [...] }, accedemos a su array interno
         const penasEnOpcionStr = opcionObj.penas.map(p => 
             `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`
@@ -202,20 +202,20 @@ function subirDatosIniciales() {
     fetch('delitos.json')
         .then(res => res.json())
         .then(data => {
-            const coleccionDelitos = db.collection("delitos");
+            const coleccionDelitos = db.collection("Delitos2");
             const promesas = [];
 
             data.forEach(delito => {
                 // --- TRANSFORMACIÓN CLAVE ---
                 // Convertimos el array de arrays en un array de objetos
-                const opcionesDePenaCorregidas = delito.opcionesDePena.map(opcionArray => {
+                const penasAlternativasCorregidas = delito.penasAlternativas.map(opcionArray => {
                     return { penas: opcionArray };
                 });
 
                 // Creamos un nuevo objeto de delito con la estructura corregida
                 const delitoCorregido = {
                     ...delito,
-                    opcionesDePena: opcionesDePenaCorregidas
+                    penasAlternativas: penasAlternativasCorregidas
                 };
 
                 // Añadimos el delito con la estructura válida a la colección.
