@@ -53,8 +53,28 @@ function extraerNumeroArticulo(articuloStr) {
 }
 function formatearDuracion(d) { if (!d) return "N/A"; const p = []; if (d.años > 0) p.push(`${d.años} año${d.años !== 1 ? 's' : ''}`); if (d.meses > 0) p.push(`${d.meses} mes${d.meses !== 1 ? 'es' : ''}`); if (d.dias > 0) p.push(`${d.dias} día${d.dias !== 1 ? 's' : ''}`); return p.length > 0 ? p.join(' y ') : "N/A"; }
 function getIconForPena(t) { /* Tu función de iconos completa aquí */ return `<svg class="pena-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>`; }
-function formatearPenasDelito(d) { const op = d.opcionesDePena.map(o => o.map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>')).join('<div class="operador-o">O</div>'); const ob = d.penasObligatorias.map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>'); let r = ''; if (op) r += op; if (ob) { r += r ? `<div class="penas-obligatorias"><strong>Y (en todo caso)</strong>${ob}</div>` : ob; } return r || 'No especificado'; }
+// REEMPLAZA ESTA FUNCIÓN EN TU SCRIPT.JS
 
+function formatearPenasDelito(delito) {
+    const opcionesStr = delito.opcionesDePena.map(opcionObj => {
+        // Ahora 'opcionObj' es { penas: [...] }, accedemos a su array interno
+        const penasEnOpcionStr = opcionObj.penas.map(p => 
+            `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`
+        ).join('<div class="operador-y">Y</div>');
+        
+        return `<div class="opcion-pena-bloque">${penasEnOpcionStr}</div>`;
+    }).join('<div class="operador-o">O</div>');
+    
+    const obligatoriasStr = delito.penasObligatorias.map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>');
+    
+    let resultado = '';
+    if (opcionesStr) resultado += opcionesStr;
+    if (obligatoriasStr) {
+        if (resultado) resultado += `<div class="penas-obligatorias"><strong>Y (en todo caso)</strong>${obligatoriasStr}</div>`;
+        else resultado += obligatoriasStr;
+    }
+    return resultado || 'No especificado';
+}
 // --- LÓGICA DE LA APLICACIÓN ---
 
 function agruparDelitosParaSidebar(todosLosDelitos) {
@@ -175,6 +195,8 @@ function aplicarFiltrosYRenderizar() {
     }
     renderDelitos(delitosResultantes);
 }
+// REEMPLAZA ESTA FUNCIÓN EN TU SCRIPT.JS
+
 function subirDatosIniciales() {
     console.log("Iniciando subida de datos...");
     fetch('delitos.json')
@@ -184,12 +206,22 @@ function subirDatosIniciales() {
             const promesas = [];
 
             data.forEach(delito => {
-                // Añadimos cada delito a la colección.
-                // 'add' crea un documento con un ID automático.
-                promesas.push(coleccionDelitos.add(delito));
-            });
+                // --- TRANSFORMACIÓN CLAVE ---
+                // Convertimos el array de arrays en un array de objetos
+                const opcionesDePenaCorregidas = delito.opcionesDePena.map(opcionArray => {
+                    return { penas: opcionArray };
+                });
 
-            // Esperamos a que todas las subidas terminen
+                // Creamos un nuevo objeto de delito con la estructura corregida
+                const delitoCorregido = {
+                    ...delito,
+                    opcionesDePena: opcionesDePenaCorregidas
+                };
+
+                // Añadimos el delito con la estructura válida a la colección.
+                promesas.push(coleccionDelitos.add(delitoCorregido));
+            });
+            
             return Promise.all(promesas);
         })
         .then(() => {
