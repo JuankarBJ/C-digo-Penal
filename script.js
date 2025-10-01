@@ -197,42 +197,6 @@ function aplicarFiltrosYRenderizar() {
 }
 // REEMPLAZA ESTA FUNCIÓN EN TU SCRIPT.JS
 
-function subirDatosIniciales() {
-    console.log("Iniciando subida de datos...");
-    fetch('delitos.json')
-        .then(res => res.json())
-        .then(data => {
-            const coleccionDelitos = db.collection("Delitos2");
-            const promesas = [];
-
-            data.forEach(delito => {
-                // --- TRANSFORMACIÓN CLAVE ---
-                // Convertimos el array de arrays en un array de objetos
-                const penasAlternativasCorregidas = delito.penasAlternativas.map(opcionArray => {
-                    return { penas: opcionArray };
-                });
-
-                // Creamos un nuevo objeto de delito con la estructura corregida
-                const delitoCorregido = {
-                    ...delito,
-                    penasAlternativas: penasAlternativasCorregidas
-                };
-
-                // Añadimos el delito con la estructura válida a la colección.
-                promesas.push(coleccionDelitos.add(delitoCorregido));
-            });
-            
-            return Promise.all(promesas);
-        })
-        .then(() => {
-            console.log("¡Éxito! Todos los delitos se han subido a Firestore.");
-            alert("¡Datos subidos a Firestore con éxito!");
-        })
-        .catch(error => {
-            console.error("Error durante la subida inicial:", error);
-            alert("Error al subir los datos.");
-        });
-}
 
 // --- MANEJO DE EVENTOS ---
 sidebarContainer.addEventListener('click', function(event) {
@@ -298,14 +262,21 @@ backdrop.addEventListener('click', () => {
 document.addEventListener("DOMContentLoaded", () => {
     // Ya no usamos fetch('delitos.json')
     // Ahora leemos desde la colección "delitos" de Firestore
-    db.collection("delitos").get()
+    db.collection("Delitos2").get()
         .then((querySnapshot) => {
+            // ✅ PUNTO DE VERIFICACIÓN 1: Si el código llega aquí, la conexión tuvo éxito.
+            console.log(`Se han encontrado ${querySnapshot.size} delitos en Firebase.`);
+
+        
             delitos = []; // Vaciamos el array por si acaso
             querySnapshot.forEach((doc) => {
                 // 'doc.data()' es el objeto de delito que guardamos
                 delitos.push(doc.data());
             });
             
+             // ✅ PUNTO DE VERIFICACIÓN 2: Comprueba qué datos se han cargado.
+            console.log("Datos cargados en la variable 'delitos':", delitos);
+
             // Una vez cargados los datos, iniciamos la aplicación como antes
             buildSidebar();
             aplicarFiltrosYRenderizar();
