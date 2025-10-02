@@ -11,12 +11,24 @@
             --color-muted-text: #aebecd; --color-accent-primary: #7296b1; --color-block-bg: #202d3b;
             --color-border: #40566b; --color-accent-green: #2a9d8f; --color-accent-red: #e76f51;
             --color-accent-yellow: #f4a261;
+            --sidebar-width: 350px;
         }
         *, *::before, *::after { box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--color-dark-bg); color: var(--color-light-text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         h1, h2, h3, h4, h5 { margin: 0; }
+        
         .admin-container { display: flex; width: 100%; height: 100%; }
-        .delito-list-panel { width: 350px; flex-shrink: 0; background-color: var(--color-block-bg); padding: 20px; height: 100%; overflow-y: auto; border-right: 2px solid var(--color-border); }
+        
+        .delito-list-panel {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            background-color: var(--color-block-bg);
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+            border-right: 2px solid var(--color-border);
+            transition: transform 0.3s ease-out;
+        }
         .delito-editor-panel { flex-grow: 1; padding: 30px 40px; height: 100%; overflow-y: auto; }
         .delito-list-panel h2 { color: var(--color-accent-primary); margin-bottom: 15px; border-bottom: 1px solid var(--color-border); padding-bottom: 10px; }
         #delito-list { list-style: none; padding: 0; margin: 0; }
@@ -36,6 +48,33 @@
         .pena-row-grid label { font-size: 0.8em; margin-bottom: 4px; }
         button.delete-btn { background-color: var(--color-accent-red); padding: 5px 10px; }
         .toastui-editor-defaultUI { border: 1px solid var(--color-border) !important; } .toastui-editor-toolbar { background-color: var(--color-card-bg) !important; } .toastui-editor-main .ProseMirror { background-color: #FFFFFF !important; color: #000000 !important; }
+        
+        #menu-toggle-btn {
+            display: none; /* Oculto en escritorio */
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            background-color: var(--color-accent-primary); border: none; border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1001; cursor: pointer;
+            align-items: center; justify-content: center;
+        }
+        #menu-toggle-btn svg { width: 32px; height: 32px; color: #fff; }
+        #backdrop {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); z-index: 999;
+            opacity: 0; transition: opacity 0.3s ease-out;
+        }
+
+        @media (max-width: 900px) {
+            .admin-container { display: block; }
+            .delito-list-panel {
+                position: fixed; top: 0; left: 0; height: 100%;
+                transform: translateX(-100%); z-index: 1000;
+            }
+            .delito-editor-panel { width: 100%; padding: 15px; }
+            #menu-toggle-btn { display: flex; }
+
+            body.sidebar-visible .delito-list-panel { transform: translateX(0); }
+            body.sidebar-visible #backdrop { display: block; opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -45,11 +84,10 @@
             <button id="crear-nuevo-btn" style="width: 100%; margin-bottom: 15px;">+ Crear Nuevo Delito</button>
             <ul id="delito-list"></ul>
         </aside>
-
         <main class="delito-editor-panel">
             <form id="delito-form">
                 <h1 id="editor-title">Crear Nuevo Delito</h1>
-                <div class="form-section"><h2>Información General</h2><div class="form-grid"><div class="form-group"><label for="articulo">Artículo</label><input type="text" id="articulo"></div><div class="form-group"><label for="nombre">Nombre del Delito</label><input type="text" id="nombre"></div><div class="form-group"><label for="gravedad">Gravedad</label><select id="gravedad"><option value="Leve">Leve</option><option value="Menos grave">Menos grave</option><option value="Grave">Grave</option></select></div><div class="form-group"><label>¿Requiere Denuncia?</label><div><input type="radio" id="denuncia-si" name="denuncia" value="true"><label for="denuncia-si"> Sí</label><input type="radio" id="denuncia-no" name="denuncia" value="false"><label for="denuncia-no"> No</label></div></div></div></div>
+                <div class="form-section"><h2>Información General</h2><div class="form-grid"><div class="form-group"><label for="articulo">Artículo</label><input type="text" id="articulo"></div><div class="form-group"><label for="nombre">Nombre del Delito</label><input type="text" id="nombre"></div><div class="form-group"><label for="gravedad">Gravedad</label><select id="gravedad"><option value="Leve">Leve</option><option value="Menos grave" selected>Menos grave</option><option value="Grave">Grave</option></select></div><div class="form-group"><label>¿Requiere Denuncia?</label><div><input type="radio" id="denuncia-si" name="denuncia" value="true"><label for="denuncia-si"> Sí</label><input type="radio" id="denuncia-no" name="denuncia" value="false"><label for="denuncia-no"> No</label></div></div></div></div>
                 <div class="form-section"><h2>Clasificación Jerárquica</h2><div class="form-grid"><div class="form-group"><label for="titulo">ID Título</label><input type="number" id="titulo"></div><div class="form-group"><label for="capitulo">ID Capítulo</label><input type="number" id="capitulo"></div><div class="form-group"><label for="seccion">ID Sección</label><input type="number" id="seccion"></div><div class="form-group"><label for="subseccion">ID Subsección</label><input type="number" id="subseccion"></div></div></div>
                 <div class="form-section"><h2>Descripción de la Conducta</h2><div id="editor"></div></div>
                 <div class="form-section"><h2>Penas Alternativas ("O")</h2><div id="opciones-container" class="penas-container"></div><button type="button" id="add-opcion-btn">Añadir Opción</button></div>
@@ -62,6 +100,11 @@
         </main>
     </div>
 
+    <div id="backdrop"></div>
+    <button id="menu-toggle-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    
     <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -70,22 +113,19 @@
     <script>
         // --- INICIALIZACIÓN DE FIREBASE ---
         const firebaseConfig = {
-    apiKey: "AIzaSyAJwPnmjM1RCn5tr60tq_vwLUoRqsmwHzU",
-    authDomain: "codigopenal-app.firebaseapp.com",
-    projectId: "codigopenal-app",
-    storageBucket: "codigopenal-app.firebasestorage.app",
-    messagingSenderId: "293989113735",
-    appId: "1:293989113735:web:a9515149fc06e7471efd22"
-  };
+        apiKey: "AIzaSyAJwPnmjM1RCn5tr60tq_vwLUoRqsmwHzU",
+        authDomain: "codigopenal-app.firebaseapp.com",
+        projectId: "codigopenal-app",
+        storageBucket: "codigopenal-app.firebasestorage.app",
+        messagingSenderId: "293989113735",
+        appId: "1:293989113735:web:a9515149fc06e7471efd22"
+         };
         const app = firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
         
-        // --- ESTADO DE LA APLICACIÓN ---
+        // --- ESTADO Y ELEMENTOS DEL DOM ---
         let modoEdicion = { activo: false, idDelito: null };
         let opcionCounter = 0;
-
-        // --- ELEMENTOS DEL DOM ---
         const editorTitle = document.getElementById('editor-title');
         const delitoList = document.getElementById('delito-list');
         const saveBtn = document.getElementById('save-btn');
@@ -95,20 +135,28 @@
         const opcionesContainer = document.getElementById('opciones-container');
         const obligatoriasContainer = document.getElementById('obligatorias-container');
         const editor = new toastui.Editor({ el: document.querySelector('#editor'), height: '200px', initialEditType: 'wysiwyg', previewStyle: 'vertical', usageStatistics: false });
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const backdrop = document.getElementById('backdrop');
+        const body = document.body;
         
         // --- LÓGICA DE LA APLICACIÓN ---
 
         async function cargarListaDelitos() {
             delitoList.innerHTML = '<li>Cargando...</li>';
-            const snapshot = await db.collection("Delitos2").orderBy("articulo").get();
-            delitoList.innerHTML = '';
-            snapshot.forEach(doc => {
-                const delito = doc.data();
-                const li = document.createElement('li');
-                li.dataset.id = doc.id;
-                li.innerHTML = `${delito.nombre || 'Delito sin nombre'}<span>${delito.articulo || ''}</span>`;
-                delitoList.appendChild(li);
-            });
+            try {
+                const snapshot = await db.collection("Delitos2").orderBy("articulo").get();
+                delitoList.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const delito = doc.data();
+                    const li = document.createElement('li');
+                    li.dataset.id = doc.id;
+                    li.innerHTML = `${delito.nombre || 'Delito sin nombre'}<span>${delito.articulo || ''}</span>`;
+                    delitoList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Error al cargar la lista de delitos:", error);
+                delitoList.innerHTML = '<li>Error al cargar.</li>';
+            }
         }
 
         function getPenaTipos() { return `<option value="Prisión">Prisión</option><option value="Multa">Multa</option><option value="Trabajos en beneficio de la comunidad">TBC</option><option value="Privación del derecho a conducir">Priv. Conducir</option><option value="Privación del derecho a la tenencia de armas">Priv. Armas</option>`; }
@@ -145,14 +193,12 @@
             document.getElementById('gravedad').value = delitoData.gravedad || 'Menos grave';
             document.querySelector(`input[name="denuncia"][value="${delitoData.requiereDenuncia}"]`).checked = true;
             editor.setMarkdown(delitoData.descripcion || '');
-            
             if (delitoData.clasificacion) {
                 document.getElementById('titulo').value = delitoData.clasificacion.titulo || '';
                 document.getElementById('capitulo').value = delitoData.clasificacion.capitulo || '';
                 document.getElementById('seccion').value = delitoData.clasificacion.seccion || '';
                 document.getElementById('subseccion').value = delitoData.clasificacion.subseccion || '';
             }
-            
             (delitoData.penasAlternativas || []).forEach(opcion => {
                 const opcionDiv = addOpcionAlternativa();
                 const penasContainer = opcionDiv.querySelector('.penas-en-opcion');
@@ -160,11 +206,9 @@
                     penasContainer.appendChild(createPenaRowElement(pena));
                 });
             });
-
             (delitoData.penasObligatorias || []).forEach(pena => {
                 obligatoriasContainer.appendChild(createPenaRowElement(pena));
             });
-
             modoEdicion = { activo: true, idDelito: delitoId };
             editorTitle.textContent = `Editando: ${delitoData.nombre}`;
             saveBtn.textContent = "Actualizar Delito";
@@ -191,13 +235,14 @@
             document.querySelectorAll('#obligatorias-container .pena-row').forEach(row => { delito.penasObligatorias.push(readPenaFromRow(row)); });
             return delito;
         }
-
         function readPenaFromRow(rowEl) { return { tipo: rowEl.querySelector('.pena-tipo').value, durMin: { años: parseInt(rowEl.querySelector('.pena-min-anos').value) || 0, meses: parseInt(rowEl.querySelector('.pena-min-meses').value) || 0, dias: parseInt(rowEl.querySelector('.pena-min-dias').value) || 0 }, durMax: { años: parseInt(rowEl.querySelector('.pena-max-anos').value) || 0, meses: parseInt(rowEl.querySelector('.pena-max-meses').value) || 0, dias: parseInt(rowEl.querySelector('.pena-max-dias').value) || 0 } }; }
 
         // --- MANEJO DE EVENTOS ---
         delitoList.addEventListener('click', async (e) => {
             const li = e.target.closest('li[data-id]');
             if (!li) return;
+            // Al seleccionar un delito en móvil, ocultar la lista
+            if (window.innerWidth <= 900) { body.classList.remove('sidebar-visible'); }
             const delitoId = li.dataset.id;
             try {
                 const doc = await db.collection("Delitos2").doc(delitoId).get();
@@ -206,51 +251,55 @@
                     const selected = delitoList.querySelector('.selected');
                     if (selected) selected.classList.remove('selected');
                     li.classList.add('selected');
-                } else { console.error("No se encontró el documento."); }
+                }
             } catch(error) { console.error("Error al cargar el delito:", error); }
         });
         
         saveBtn.addEventListener('click', async () => {
             const delitoData = readForm();
+            if (!delitoData.articulo || !delitoData.nombre) {
+                alert("El Artículo y el Nombre son campos obligatorios.");
+                return;
+            }
+            saveBtn.disabled = true; saveBtn.textContent = 'Guardando...';
             try {
                 if (modoEdicion.activo) {
                     await db.collection("Delitos2").doc(modoEdicion.idDelito).set(delitoData);
-                    alert('¡Delito actualizado con éxito!');
+                    alert('¡Delito actualizado!');
                 } else {
                     await db.collection("Delitos2").add(delitoData);
-                    alert('¡Delito creado con éxito!');
+                    alert('¡Delito creado!');
                 }
-                cargarListaDelitos();
+                await cargarListaDelitos();
                 limpiarFormulario();
-            } catch (error) { console.error("Error al guardar el delito:", error); alert("Error al guardar el delito."); }
+            } catch (error) { console.error("Error al guardar:", error); alert("Error al guardar."); }
+            finally { saveBtn.disabled = false; }
         });
 
         crearNuevoBtn.addEventListener('click', limpiarFormulario);
 
         deleteBtn.addEventListener('click', async () => {
             if (!modoEdicion.activo) return;
-            if (confirm(`¿Estás seguro de que quieres eliminar "${document.getElementById('nombre').value}"? Esta acción no se puede deshacer.`)) {
+            if (confirm(`¿Eliminar "${document.getElementById('nombre').value}"?`)) {
                 try {
                     await db.collection("Delitos2").doc(modoEdicion.idDelito).delete();
                     alert('¡Delito eliminado!');
-                    cargarListaDelitos();
+                    await cargarListaDelitos();
                     limpiarFormulario();
-                } catch (error) { console.error("Error al eliminar:", error); alert("Error al eliminar el delito."); }
+                } catch (error) { console.error("Error al eliminar:", error); alert("Error al eliminar."); }
             }
         });
         
-        document.getElementById('add-opcion-btn').addEventListener('click', () => {
-            const opcionDiv = addOpcionAlternativa();
-            opcionDiv.querySelector('.penas-en-opcion').appendChild(createPenaRowElement());
-        });
+        document.getElementById('add-opcion-btn').addEventListener('click', () => { const opcionDiv = addOpcionAlternativa(); opcionDiv.querySelector('.penas-en-opcion').appendChild(createPenaRowElement()); });
         document.getElementById('add-obligatoria-btn').addEventListener('click', () => { obligatoriasContainer.appendChild(createPenaRowElement()); });
         opcionesContainer.addEventListener('click', e => { if (e.target.classList.contains('add-pena-a-opcion-btn')) { e.target.previousElementSibling.appendChild(createPenaRowElement()); } });
+        
+        menuToggleBtn.addEventListener('click', () => { body.classList.toggle('sidebar-visible'); });
+        backdrop.addEventListener('click', () => { body.classList.remove('sidebar-visible'); });
 
         // --- INICIALIZACIÓN ---
         document.addEventListener("DOMContentLoaded", () => {
-            // (La autenticación se puede añadir aquí si se necesita)
             cargarListaDelitos();
-            limpiarFormulario();
         });
     </script>
 </body>
