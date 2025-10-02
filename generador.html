@@ -2,32 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Código Penal</title>
     <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
     <style>
         :root {
             --color-dark-bg: #1f2a38; --color-card-bg: #2b3a4a; --color-light-text: #e8f0f7;
             --color-muted-text: #aebecd; --color-accent-primary: #7296b1; --color-block-bg: #202d3b;
-            --color-border: #40566b; --color-accent-green: #2a9d8f; --color-accent-red: #e76f51;
+            --color-border: #40566b; --color-accent-green: #2a9d8f;
         }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--color-dark-bg); color: var(--color-light-text); margin: 0; padding: 30px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--color-dark-bg); color: var(--color-light-text); margin: 0; padding: 15px; }
         .container { max-width: 900px; margin: 0 auto; }
-        h1, h2 { text-align: center; color: var(--color-accent-primary); }
-        .form-section { background-color: var(--color-card-bg); padding: 25px; border-radius: 8px; margin-bottom: 20px; }
-        .form-section h2 { margin-top: 0; border-bottom: 2px solid var(--color-border); padding-bottom: 10px; text-align: left; }
+        h1 { text-align: center; color: var(--color-accent-primary); font-size: 1.8em; }
+        .form-section { background-color: var(--color-card-bg); padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .form-section h2 { margin-top: 0; border-bottom: 2px solid var(--color-border); padding-bottom: 10px; font-size: 1.3em; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
         .form-group { display: flex; flex-direction: column; }
         label { margin-bottom: 8px; font-weight: 600; color: var(--color-muted-text); }
         input[type="text"], input[type="email"], input[type="password"], input[type="number"], select {
             padding: 10px; border-radius: 5px; border: 1px solid var(--color-border);
-            background-color: var(--color-block-bg); color: var(--color-light-text); font-size: 1em;
+            background-color: var(--color-block-bg); color: var(--color-light-text); font-size: 1em; width: 100%; box-sizing: border-box;
         }
         button { padding: 10px 15px; border: none; border-radius: 5px; background-color: var(--color-accent-primary); color: #fff; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
         button:hover { background-color: #8aa7c2; }
-        #logout-btn { background-color: var(--color-accent-red); position: absolute; top: 20px; right: 20px; }
-        /* ... (resto de estilos sin cambios) ... */
-        .pena-row { background-color: var(--color-block-bg); padding: 15px; border-radius: 5px; margin-bottom: 10px; } .pena-row-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: flex-end; } .pena-row-grid.tipo-pena-wrapper { display:flex; justify-content:space-between; align-items:flex-end; grid-template-columns: unset; margin-bottom: 10px; } .pena-row-grid label { font-size: 0.8em; margin-bottom: 4px; }
-        .toastui-editor-defaultUI { border: 1px solid var(--color-border) !important; } .toastui-editor-toolbar { background-color: var(--color-card-bg) !important; } .toastui-editor-main .ProseMirror { background-color: #FFFFFF !important; color: #000000 !important; }
+        button.delete-btn { background-color: #c0392b; padding: 5px 10px; }
+        .penas-container { display: flex; flex-direction: column; gap: 15px; }
+        .opcion-alternativa, .pena-obligatoria { border: 1px solid var(--color-border); padding: 15px; border-radius: 6px; }
+        .pena-row { background-color: var(--color-block-bg); padding: 15px; border-radius: 5px; margin-bottom: 10px; }
+        .pena-row-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; align-items: flex-end; }
+        .pena-row-grid.tipo-pena-wrapper { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom: 10px; }
+        .pena-row-grid label { font-size: 0.8em; margin-bottom: 4px; }
+        #json-output { white-space: pre-wrap; background-color: var(--color-block-bg); border: 1px solid var(--color-border); padding: 20px; border-radius: 8px; overflow-x: auto; font-family: monospace; }
+        .output-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .toastui-editor-defaultUI { border: 1px solid var(--color-border) !important; }
+        .toastui-editor-toolbar { background-color: var(--color-card-bg) !important; }
+        .toastui-editor-main .ProseMirror { background-color: #FFFFFF !important; color: #000000 !important; }
+        .toastui-editor-md-preview { background-color: var(--color-block-bg) !important; color: var(--color-light-text) !important; }
+        .toastui-editor-toolbar button, .toastui-editor-toolbar .tab-item { color: var(--color-light-text) !important; }
     </style>
 </head>
 <body>

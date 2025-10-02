@@ -79,7 +79,7 @@ function agruparDelitosParaSidebar(todosLosDelitos) {
 }
 
 function buildSidebar() {
-    sidebarContainer.innerHTML = '<h1>Índice</h1><ul id="navigation-tree"></ul>';
+    
     const treeContainer = document.getElementById('navigation-tree');
     const grupos = agruparDelitosParaSidebar(delitos);
     let html = `<li><span class="nav-item nav-titulo active-nav" data-filter-level="all">Ver Todos</span></li>`;

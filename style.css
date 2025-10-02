@@ -20,6 +20,7 @@ h1, h2, h3, h4, h5 { margin: 0; }
     overflow-y: auto;
     transition: transform 0.3s ease-out;
 }
+
 #sidebar h1 { font-size: 1.8em; margin: 0 0 25px 0; padding-bottom: 15px; border-bottom: 2px solid var(--color-border); text-align: left; }
 #navigation-tree, #navigation-tree ul { list-style: none; padding: 0; margin: 0; }
 .nav-item { display: flex; align-items: center; padding: 8px 12px; border-radius: 6px; cursor: pointer; user-select: none; transition: background-color 0.2s ease; position: relative; }
@@ -114,4 +115,22 @@ h1.content-title { text-align: center; margin-bottom: 40px; }
         display: block;
         opacity: 1;
     }
+}
+/* --- AÑADE ESTO AL FINAL DE TU style.css --- */
+
+#link-generador {
+    display: block;
+    margin-top: 25px;
+    padding: 12px 15px;
+    background-color: var(--color-accent-green);
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+#link-generador:hover {
+    background-color: #32b3a3;
 }
