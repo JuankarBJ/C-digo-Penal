@@ -97,7 +97,23 @@ h1.content-title { text-align: center; margin-bottom: 40px; }
 .pena-detalle strong { color: var(--color-light-text); }
 .pena-detalle span { color: var(--color-muted-text); }
 
+/* --- AÑADE ESTAS REGLAS A TU style.css --- */
 
+.context-header.seccion-header h4 {
+    font-size: 1.05em;
+    color: var(--color-light-text);
+    font-weight: 400;
+    font-style: italic;
+    padding-left: 20px;
+}
+
+.context-header.subseccion-header h5 {
+    font-size: 1em;
+    color: var(--color-muted-text);
+    font-weight: 400;
+    font-style: italic;
+    padding-left: 30px;
+}
 /* Estilo de los OPERADORES (O, Y, Y en todo caso) */
 .operador-o,
 .operador-y,

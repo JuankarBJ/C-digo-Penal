@@ -124,19 +124,24 @@ function agruparDelitosParaSidebar(todosLosDelitos) {
     todosLosDelitos.forEach(delito => {
         const { titulo, capitulo, seccion, subseccion } = delito.clasificacion;
         if (!titulo) return;
-        if (!grupos[titulo]) grupos[titulo] = {};
+
+        const t = titulo;
         const c = capitulo || placeholder;
-        if (!grupos[titulo][c]) grupos[titulo][c] = {};
         const s = seccion || placeholder;
-        if (!grupos[titulo][c][s]) grupos[titulo][c][s] = {};
         const ss = subseccion || placeholder;
-        if (!grupos[titulo][c][s][ss]) grupos[titulo][c][s][ss] = [];
+
+        if (!grupos[t]) grupos[t] = {};
+        if (!grupos[t][c]) grupos[t][c] = {};
+        if (!grupos[t][c][s]) grupos[t][c][s] = {};
+        if (!grupos[t][c][s][ss]) grupos[t][c][s][ss] = []; // <-- ESTA LÍNEA FALTABA
+
+        // Y esta también, para añadir el delito al final de la estructura
+        grupos[t][c][s][ss].push(delito);
     });
     return grupos;
 }
 
 function buildSidebar() {
-    
     const treeContainer = document.getElementById('navigation-tree');
     const grupos = agruparDelitosParaSidebar(delitos);
     let html = `<li><span class="nav-item nav-titulo active-nav" data-filter-level="all">Ver Todos</span></li>`;
@@ -149,11 +154,12 @@ function buildSidebar() {
             let seccionesHTML = '';
             Object.keys(grupos[tituloKey][capituloKey]).sort((a, b) => a - b).forEach(seccionKey => {
                 if (seccionKey === placeholder) return;
+                // Lógica de subsecciones iría aquí...
                 const nombreSeccion = DICCIONARIO_SECCIONES[seccionKey] || `Sección ${seccionKey}`;
-                seccionesHTML += `<li><span class="nav-item nav-seccion" data-filter-level="seccion" data-filter-value="${seccionKey}">${nombreSeccion}</span></li>`;
+                seccionesHTML += `<li><span class="nav-item nav-seccion" data-filter-level="seccion" data-filter-value="${seccionKey}" data-titulo="${tituloKey}" data-capitulo="${capituloKey}">${nombreSeccion}</span></li>`;
             });
             const nombreCapitulo = DICCIONARIO_CAPITULOS[capituloKey] || `Capítulo ${capituloKey}`;
-            capitulosHTML += `<li><span class="nav-item nav-capitulo" data-filter-level="capitulo" data-filter-value="${capituloKey}">${seccionesHTML ? iconHTML : '<span class="nav-icon"></span>'} ${nombreCapitulo}</span>${seccionesHTML ? `<ul class="nav-submenu">${seccionesHTML}</ul>` : ''}</li>`;
+            capitulosHTML += `<li><span class="nav-item nav-capitulo" data-filter-level="capitulo" data-filter-value="${capituloKey}" data-titulo="${tituloKey}">${seccionesHTML ? iconHTML : '<span class="nav-icon"></span>'} ${nombreCapitulo}</span>${seccionesHTML ? `<ul class="nav-submenu">${seccionesHTML}</ul>` : ''}</li>`;
         });
         const nombreTitulo = DICCIONARIO_TITULOS[tituloKey] || `Título ${tituloKey}`;
         html += `<li><span class="nav-item nav-titulo" data-filter-level="titulo" data-filter-value="${tituloKey}">${capitulosHTML ? iconHTML : '<span class="nav-icon"></span>'} ${nombreTitulo}</span>${capitulosHTML ? `<ul class="nav-submenu">${capitulosHTML}</ul>` : ''}</li>`;
@@ -163,52 +169,104 @@ function buildSidebar() {
 
 function renderDelitos(delitosAMostrar) {
     contentContainer.innerHTML = "";
-    delitosAMostrar.sort((a, b) => (a.articulo || "").localeCompare(b.articulo || "", undefined, { numeric: true }));
+    delitosAMostrar.sort((a, b) => {
+        const clasA = a.clasificacion; const clasB = b.clasificacion;
+        if (clasA.titulo !== clasB.titulo) return (clasA.titulo || 0) - (clasB.titulo || 0);
+        if (clasA.capitulo !== clasB.capitulo) return (clasA.capitulo || 0) - (clasB.capitulo || 0);
+        if (clasA.seccion !== clasB.seccion) return (clasA.seccion || 0) - (clasB.seccion || 0);
+        if (clasA.subseccion !== clasB.subseccion) return (clasA.subseccion || 0) - (clasB.subseccion || 0);
+        return (a.articulo || "").localeCompare(b.articulo || "", undefined, { numeric: true });
+    });
 
     if (delitosAMostrar.length === 0) {
         contentContainer.innerHTML = `<p style="text-align:center; font-size: 1.2em; color: var(--color-muted-text);">No hay delitos que coincidan con los filtros seleccionados.</p>`;
         return;
     }
 
+    let currentTituloId = null, currentCapituloId = null, currentSeccionId = null, currentSubseccionId = null;
+
     delitosAMostrar.forEach(d => {
+        const clasificacion = d.clasificacion;
+
+        if (clasificacion.titulo && clasificacion.titulo !== currentTituloId) {
+            currentTituloId = clasificacion.titulo;
+            const nombreTitulo = DICCIONARIO_TITULOS[currentTituloId] || `Título ${currentTituloId}`;
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'context-header titulo-header';
+            headerDiv.innerHTML = `<h2>${nombreTitulo}</h2>`;
+            contentContainer.appendChild(headerDiv);
+            currentCapituloId = null; currentSeccionId = null; currentSubseccionId = null;
+        }
+
+        if (clasificacion.capitulo && clasificacion.capitulo !== currentCapituloId) {
+            currentCapituloId = clasificacion.capitulo;
+            const nombreCapitulo = DICCIONARIO_CAPITULOS[currentCapituloId] || `Capítulo ${currentCapituloId}`;
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'context-header capitulo-header';
+            headerDiv.innerHTML = `<h3>${nombreCapitulo}</h3>`;
+            contentContainer.appendChild(headerDiv);
+            currentSeccionId = null; currentSubseccionId = null;
+        }
+
+        if (clasificacion.seccion && clasificacion.seccion !== currentSeccionId) {
+            currentSeccionId = clasificacion.seccion;
+            const nombreSeccion = DICCIONARIO_SECCIONES[currentSeccionId] || `Sección ${currentSeccionId}`;
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'context-header seccion-header';
+            headerDiv.innerHTML = `<h4>${nombreSeccion}</h4>`;
+            contentContainer.appendChild(headerDiv);
+            currentSubseccionId = null;
+        }
+
+        // Renderizado de la tarjeta (el código interno no cambia)
         const gravedad = d.gravedad || "No clasificada";
         const gravedadClass = gravedad.toLowerCase().replace(" ", "-");
         const card = document.createElement("div");
         card.className = `delito-card ${gravedadClass}`;
-        const rutaClasificacion = [ DICCIONARIO_TITULOS[d.clasificacion.titulo], DICCIONARIO_CAPITULOS[d.clasificacion.capitulo], DICCIONARIO_SECCIONES[d.clasificacion.seccion] ].filter(Boolean).join(' &gt; ');
+        const rutaClasificacion = [ DICCIONARIO_TITULOS[clasificacion.titulo], DICCIONARIO_CAPITULOS[clasificacion.capitulo], DICCIONARIO_SECCIONES[clasificacion.seccion] ].filter(Boolean).join(' &gt; ');
         card.innerHTML = `<div class="card-header"><div class="info-principal"><span class="articulo">${d.articulo}</span><h4>${d.nombre}</h4></div><div style="display: flex; align-items: center;"><div class="gravedad-badge ${gravedadClass}">${gravedad}</div><svg class="expand-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 18 15 12 9 6"></polyline></svg></div></div><div class="card-collapsible-content"><div class="card-body"><div class="descripcion"><h5>Descripción de la conducta</h5>${window.marked ? marked.parse(d.descripcion) : d.descripcion}</div><div class="penas-aplicables"><h5>Penas Aplicables</h5>${formatearPenasDelito(d)}</div></div><div class="card-footer"><div class="clasificacion-ruta"><strong>Clasificación:</strong> ${rutaClasificacion}</div><div class="info-denuncia"><strong>Persecución:</strong> ${d.requiereDenuncia ? 'Requiere denuncia' : 'De oficio'}</div></div></div>`;
         contentContainer.appendChild(card);
     });
 }
 
+
 function aplicarFiltrosYRenderizar() {
     const filtroGrav = filtroGravedadSelect.value;
     let delitosResultantes = delitos;
-    const { level, value } = filtroActivoSidebar;
+    const { level, value, titulo, capitulo, seccion } = filtroActivoSidebar;
 
-    // Lógica de filtrado simplificada gracias a los IDs únicos.
     if (level !== 'all') {
-        delitosResultantes = delitosResultantes.filter(d => 
-            d.clasificacion[level] === parseInt(value)
-        );
+        delitosResultantes = delitosResultantes.filter(d => {
+            if (level === 'titulo') return d.clasificacion.titulo === parseInt(value);
+            if (level === 'capitulo') return d.clasificacion.titulo === parseInt(titulo) && d.clasificacion.capitulo === parseInt(value);
+            if (level === 'seccion') return d.clasificacion.titulo === parseInt(titulo) && d.clasificacion.capitulo === parseInt(capitulo) && d.clasificacion.seccion === parseInt(value);
+            return true; // Para futuros niveles como subsección
+        });
     }
-    
-    // Filtro de gravedad usa la propiedad directa 'gravedad'.
+
     if (filtroGrav) {
         delitosResultantes = delitosResultantes.filter(d => d.gravedad === filtroGrav);
     }
     renderDelitos(delitosResultantes);
 }
 
-
 // --- MANEJO DE EVENTOS ---
 sidebarContainer.addEventListener('click', function(event) {
     const itemClicked = event.target.closest('.nav-item');
     if (!itemClicked) return;
+
     if (event.target.closest('.nav-icon')) {
         itemClicked.parentElement.classList.toggle('expanded');
     } else {
-        filtroActivoSidebar = { ...itemClicked.dataset };
+        // Asignamos explícitamente cada propiedad para asegurar los nombres correctos
+        filtroActivoSidebar = {
+            level: itemClicked.dataset.filterLevel,
+            value: itemClicked.dataset.filterValue,
+            titulo: itemClicked.dataset.titulo,
+            capitulo: itemClicked.dataset.capitulo,
+            seccion: itemClicked.dataset.seccion
+        };
+
         document.querySelectorAll('.nav-item.active-nav').forEach(el => el.classList.remove('active-nav'));
         itemClicked.classList.add('active-nav');
         aplicarFiltrosYRenderizar();
