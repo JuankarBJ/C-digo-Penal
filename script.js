@@ -19,19 +19,43 @@ const auth = firebase.auth();   // Referencia a la autenticación
 
 // --- DICCIONARIOS ---
 const DICCIONARIO_TITULOS = {
-    1: "Título I: Del homicidio y sus formas",
-	6: "Título VI: Delitos contra la libertad",
-    13: "Título XIII: Delitos contra el patrimonio",
-    17: "Título XVII: Delitos contra la seguridad colectiva"
+    1: "Título I. Del homicidio y sus formas",
+    2: "Título II. Del aborto",
+    3: "Título III. De las lesiones",
+    4: "Título IV. De las lesiones al feto",
+    5: "Título V. Delitos relativos a la manipulación genética",
+    6: "Título VI. Delitos contra la libertad",
+    7: "Título VII. De las torturas y otros delitos contra la integridad moral",
+    7.2: "Título VII bis. De la trata de seres humanos",
+    8: "Título VIII. Delitos contra la libertad sexual",
+    9: "Título IX. De la omisión del deber de socorro",
+    10: "Título X. Delitos contra la intimidad, el derecho a la propia imagen y la inviolabilidad del domicilio",
+    11: "Título XI. Delitos contra el honor",
+    12: "Título XII. Delitos contra las relaciones familiares",
+    13: "Título XIII. Delitos contra el patrimonio",
+    13.2: "Título XIII bis. De los delitos de financiación ilegal de los partidos políticos",
+    14: "Título XIV De los delitos contra la Hacienda Pública y contra la Seguridad Social",
+    15: "Título XV. De los delitos contra los derechos de los trabajadores",
+    15.2: "Título XV bis. Delitos contra los derechos de los ciudadanos extranjeros",
+    16: "Título XVI. De los delitos relativos a la ordenación del territorio y el urbanismo, la protección del patrimonio histórico y el medio ambiente",
+    16.2: "Título XVI bis. De los delitos contra los animales",
+    17: "Título XVII. Delitos contra la seguridad colectiva",
+    18: "Título XVIII. De las falsedades",
+    19: "Título XIX. Delitos contra la Administración Pública",
+    20: "Título XX. Delitos contra la administración de justicia",
+    21: "Título XXI. Delitos contra la Constitución",
+    22: "Título XXII. Delitos contra el orden público",
+    23: "Título XXIII. De los delitos de traición y contra la paz o la independencia del Estado y relativos a la Defensa Nacional",
+    24: "Título XXIV. Delitos contra la Comunidad Internacional"
 };
 const DICCIONARIO_CAPITULOS = {
     1301: "Capítulo I. De los hurtos",
-	1302: "Capítulo II: De los robos",
-    603: "Capítulo III: De las coacciones",
-    1704: "Capítulo IV: De los delitos contra la Seguridad Vial"
+	1302: "Capítulo II. De los robos",
+    603: "Capítulo III. De las coacciones",
+    1704: "Capítulo IV. De los delitos contra la Seguridad Vial"
 };
 const DICCIONARIO_SECCIONES = {
-    130201: "Sección 1ª: Del robo con fuerza en las cosas"
+    130201: "Sección 1ª. Del robo con fuerza en las cosas"
 };
 const DICCIONARIO_SUBSECCIONES = {}; // Listo para el futuro
 
@@ -58,7 +82,40 @@ function extraerNumeroArticulo(articuloStr) {
 // --- FUNCIONES AUXILIARES SIMPLIFICADAS ---
 function formatearDuracion(d) { if (!d) return "N/A"; const p = []; if (d.años > 0) p.push(`${d.años} año${d.años !== 1 ? 's' : ''}`); if (d.meses > 0) p.push(`${d.meses} mes${d.meses !== 1 ? 'es' : ''}`); if (d.dias > 0) p.push(`${d.dias} día${d.dias !== 1 ? 's' : ''}`); return p.length > 0 ? p.join(' y ') : "N/A"; }
 function getIconForPena(t) { /* Tu función de iconos completa aquí */ return `<svg class="pena-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10,10-4.48,10-10S17.52,2,12,2z M13,17h-2v-2h2V17z M13,13h-2V7h2V13z"/></svg>`; }
-function formatearPenasDelito(d) { const op = d.penasAlternativas.map(o => o.penas.map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>')).join('<div class="operador-o">O</div>'); const ob = d.penasObligatorias.map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>'); let r = ''; if (op) r+=`<div class="opcion-pena-bloque">${op}</div>`; if (ob) { r += r ? `<div class="penas-obligatorias"><strong>Y (en todo caso)</strong>${ob}</div>` : `<div class="opcion-pena-bloque">${ob}</div>`; } return r || 'No especificado'; }
+
+// REEMPLAZA ESTA FUNCIÓN EN TU script.js
+
+function formatearPenasDelito(delito) {
+    // 1. Mapeamos cada opción alternativa a su propio bloque HTML
+    const opcionesStr = (delito.penasAlternativas || []).map(opcionObj => {
+        const penasEnOpcionStr = (opcionObj.penas || []).map(p => 
+            `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`
+        ).join('<div class="operador-y">Y</div>');
+        
+        // Devolvemos cada grupo de penas ya envuelto en su "cajón"
+        return `<div class="opcion-pena-bloque">${penasEnOpcionStr}</div>`;
+    }).join('<div class="operador-o">O</div>'); // Unimos los cajones con el operador "O"
+    
+    // 2. Procesamos las penas obligatorias
+    const obligatoriasStr = (delito.penasObligatorias || []).map(p => `<div class="pena-detalle">${getIconForPena(p.tipo)}<div><strong>${p.tipo}</strong><br><span>de ${formatearDuracion(p.durMin)} a ${formatearDuracion(p.durMax)}</span></div></div>`).join('<div class="operador-y">Y</div>');
+    
+    // 3. Unimos todo el resultado
+    let resultado = '';
+    if (opcionesStr) {
+        resultado += opcionesStr;
+    }
+
+    if (obligatoriasStr) {
+        // Si ya había opciones, añadimos el separador "Y (en todo caso)"
+        if (resultado) {
+            resultado += `<div class="penas-obligatorias-sep">Y (en todo caso)</div>`;
+        }
+        // Envolvemos las penas obligatorias en su propio "cajón"
+        resultado += `<div class="opcion-pena-bloque">${obligatoriasStr}</div>`;
+    }
+
+    return resultado || 'No especificado';
+}
 
 // --- LÓGICA DE LA APLICACIÓN ---
 

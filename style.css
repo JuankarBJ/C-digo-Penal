@@ -59,10 +59,74 @@ h1.content-title { text-align: center; margin-bottom: 40px; }
 .delito-card.expanded .expand-icon { transform: rotate(90deg); }
 .card-collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.2s ease-out; }
 .delito-card.expanded .card-collapsible-content { max-height: 1500px; }
-.card-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-.card-body .descripcion, .card-body .penas-aplicables { background-color: var(--color-block-bg); padding: 15px; border-radius: 0.5rem; border: 1px solid var(--color-border); }
-.card-body .descripcion { font-style: italic; color: var(--color-muted-text); }
-.card-body h5 { margin: 0 0 15px 0; font-size: 1.05em; color: var(--color-light-text); border-bottom: 2px solid var(--color-border); padding-bottom: 8px; }
+.card-body { padding: 15px 20px; display: flex; flex-direction: column; gap: 20px; }
+.card-body .descripcion, .card-body /* --- Estilos para la sección de Penas Aplicables --- */
+.card-body .descripcion {
+    background-color: var(--color-block-bg);
+    padding: 15px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    font-style: italic;
+    color: var(--color-muted-text);
+}
+.penas-aplicables {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espacio entre los cajones y operadores */
+}
+
+/* Estilo del "cajón" para cada grupo de penas */
+.opcion-pena-bloque {
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 12px;
+    background-color: var(--color-dark-bg); /* Un fondo ligeramente más oscuro para resaltar */
+}
+
+/* Estilo para cada línea de pena individual con su icono */
+.pena-detalle { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
+.pena-icon { 
+    flex-shrink: 0; 
+    width: 24px; 
+    height: 24px; 
+}
+.pena-detalle strong { color: var(--color-light-text); }
+.pena-detalle span { color: var(--color-muted-text); }
+
+
+/* Estilo de los OPERADORES (O, Y, Y en todo caso) */
+.operador-o,
+.operador-y,
+.penas-obligatorias-sep {
+    text-align: center;
+    font-weight: 700;
+    color: var(--color-muted-text);
+}
+
+.operador-y {
+    font-size: 0.9em;
+    margin: 8px 0;
+    padding-top: 8px;
+    border-top: 1px dashed var(--color-border);
+}
+
+.operador-o {
+    font-size: 1.1em;
+    color: var(--color-accent-primary);
+    margin: 10px 0; /* ANTES: 15px */
+}
+.penas-obligatorias-sep {
+    font-size: 1.1em;
+    color: var(--color-accent-yellow);
+    padding-top: 10px; /* ANTES: 15px */
+    margin-top: 10px; /* ANTES: 15px */
+    border-top: 2px solid var(--color-border);
+}
+.card-body h5 { margin: 0 0 10px 0; font-size: 1.05em; color: var(--color-light-text); border-bottom: 2px solid var(--color-border); padding-bottom: 5px; }
 .card-footer { padding: 15px 20px; border-top: 1px solid var(--color-border); font-size: 0.85em; color: var(--color-muted-text); }
 .pena-detalle { display: flex; align-items: center; gap: 12px; }
 .pena-icon { flex-shrink: 0; width: 24px; height: 24px; }
